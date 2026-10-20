@@ -190,8 +190,8 @@ The databases are in memory, so their contents are lost whenever a service resta
 
 - Console: `http://localhost:8080/h2-console`
 - JDBC URL: `jdbc:h2:mem:testdb`
-- Username: `aleem`
-- Password: `aleem`
+- Username: ``
+- Password: ``
 
 ### Captain database
 
