@@ -1,4 +1,4 @@
-package com.uber.trip_service.external;
+package com.uber.trip_service.external.DTO;
 
 public class RiderDto {
 	private String id;

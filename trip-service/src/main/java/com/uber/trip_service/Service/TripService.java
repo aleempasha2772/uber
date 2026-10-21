@@ -23,8 +23,8 @@ import com.uber.trip_service.Repository.TripServiceRepository;
 import com.uber.trip_service.Repository.TripQuoteRepository;
 import com.uber.trip_service.Model.TripQuote;
 import com.uber.trip_service.Model.GeoLocation;
-import com.uber.trip_service.external.RiderDto;
-import com.uber.trip_service.external.RiderService;
+import com.uber.trip_service.external.DTO.RiderDto;
+import com.uber.trip_service.external.service.RiderService;
 
 import feign.FeignException;
 

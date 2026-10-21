@@ -18,7 +18,7 @@ import com.uber.trip_service.Model.Trip;
 import com.uber.trip_service.Model.TripQuoteRequest;
 import com.uber.trip_service.Model.TripQuoteResponse;
 import com.uber.trip_service.Service.TripService;
-import com.uber.trip_service.external.RiderDto;
+import com.uber.trip_service.external.DTO.RiderDto;
 
 @RestController
 @RequestMapping("/api/v1/trips")

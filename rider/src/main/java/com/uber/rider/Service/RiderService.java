@@ -8,6 +8,9 @@ import org.springframework.util.Assert;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
+import com.uber.rider.External.DTO.TripQuoteRequestDTO;
+import com.uber.rider.External.DTO.TripQuoteResponseDTO;
+import com.uber.rider.External.Services.TripService;
 import com.uber.rider.Model.Rider;
 import com.uber.rider.Repository.RiderRepository;
 
@@ -16,9 +19,11 @@ public class RiderService {
 	
 	
 	private final RiderRepository riderRepository;
+	private final TripService tripService;
 	
-	public RiderService(RiderRepository riderRepository) {
+	public RiderService(RiderRepository riderRepository, TripService tripService) {
 		this.riderRepository = riderRepository;
+		this.tripService = tripService;
 	}
 	
 	@Transactional
@@ -82,6 +87,11 @@ public class RiderService {
 		return riderRepository.findByPhone(phoneNumber)
 				.orElseThrow(() -> new ResponseStatusException(
 						HttpStatus.NOT_FOUND, "Rider not found for phone number"));
+	}
+
+	public String getTripQuote(TripQuoteRequestDTO tripQuoteRequestDTO){
+		TripQuoteResponseDTO tripQuoteResponseDTO = tripService.getTripQuote(tripQuoteRequestDTO);
+		return tripQuoteResponseDTO.getQuoteId();
 	}
 	
 

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uber.captain.Model.Captain;
+import com.uber.captain.Model.CaptainLocationRequest;
 import com.uber.captain.Service.CaptainService;
 import com.uber.captain.Service.CaptainLocationService;
 
@@ -63,16 +63,16 @@ public class CaptainController {
 	}
 
 
-	@PutMapping
-	public ResponseEntity getCaptainLocation() throws InterruptedException {
-		int range = 10;
-        while (range > 0) {
-            captainLocationService.updateCaptainLocation(Math.random()+ " "+Math.random());
-            System.out.println("captain location updated");
-            Thread.sleep(1000);
-            range--;
-        }
+	@PutMapping("/{captainId}/location")
+	public ResponseEntity<Map<String, String>> updateCaptainLocation(
+			@PathVariable String captainId,
+			@RequestBody CaptainLocationRequest request) {
+		Captain captain = captainService.getCaptainDetails(captainId);
+		captainLocationService.updateCaptainLocation(
+				captain.getId(),
+				request.getLatitude(),
+				request.getLongitude());
 
-        return new ResponseEntity<>(Map.of("message", "Location Updated"), HttpStatus.OK);
+		return ResponseEntity.ok(Map.of("message", "Location updated"));
 	}
 }

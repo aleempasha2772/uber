@@ -62,7 +62,7 @@ Base URL: `http://localhost:8081/api/v1/captains`
 | `GET` | `/get-captain/{captainId}` | Get a captain by ID |
 | `GET` | `/getAll-captains` | Get all captains |
 | `DELETE` | `/delete-captain/{captainId}` | Delete a captain |
-| `PUT` | `/` | Publish 10 simulated location updates to Kafka |
+| `PUT` | `/{captainId}/location` | Publish the captain's current location to Kafka |
 
 Example captain request:
 
@@ -82,10 +82,12 @@ Example captain request:
 }
 ```
 
-Publish the simulated captain locations:
+Publish a captain location:
 
 ```bash
-curl -X PUT http://localhost:8081/api/v1/captains
+curl -X PUT http://localhost:8081/api/v1/captains/YOUR_CAPTAIN_ID/location \
+  -H "Content-Type: application/json" \
+  -d '{"latitude":17.385,"longitude":78.4867}'
 ```
 
 ### Trip Service

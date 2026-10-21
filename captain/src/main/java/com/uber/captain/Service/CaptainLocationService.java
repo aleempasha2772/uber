@@ -14,8 +14,9 @@ public class CaptainLocationService {
 		this.kafkaTemplate = kafkaTemplate;
 	}
 
-	public boolean updateCaptainLocation(String captainLocation) {
-		kafkaTemplate.send(AppConstant.CAPTAIN_LOCATION_TOPIC, captainLocation);
+	public boolean updateCaptainLocation(String captainId,Double latitude,Double longitude) {
+		String captainLocation = latitude + "," + longitude;
+		kafkaTemplate.send(AppConstant.CAPTAIN_LOCATION_TOPIC,captainId,captainLocation);
 		return true;
 	}
 }

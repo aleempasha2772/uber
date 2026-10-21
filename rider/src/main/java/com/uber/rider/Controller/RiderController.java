@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.uber.rider.HelloWorld;
+import com.uber.rider.External.DTO.TripQuoteRequestDTO;
+import com.uber.rider.External.DTO.TripQuoteResponseDTO;
 import com.uber.rider.Model.Rider;
 import com.uber.rider.Service.RiderService;
 
@@ -63,5 +64,11 @@ public class RiderController {
 		log.info("Deleted rider with ID: {}", riderId);
 		riderService.deleteRider(riderId);
 		return ResponseEntity.accepted().build();
+	}
+
+	@PostMapping("/trip-quote")
+	public ResponseEntity<String> getTripQuote(
+			@RequestBody TripQuoteRequestDTO tripQuoteRequestDTO) {
+		return ResponseEntity.ok(riderService.getTripQuote(tripQuoteRequestDTO));
 	}
 }
