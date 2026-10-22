@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uber.rider.External.DTO.TripQuoteRequestDTO;
-import com.uber.rider.External.DTO.TripQuoteResponseDTO;
+import com.uber.rider.External.DTO.TripDTO;
 import com.uber.rider.Model.Rider;
 import com.uber.rider.Service.RiderService;
 
@@ -70,5 +70,10 @@ public class RiderController {
 	public ResponseEntity<String> getTripQuote(
 			@RequestBody TripQuoteRequestDTO tripQuoteRequestDTO) {
 		return ResponseEntity.ok(riderService.getTripQuote(tripQuoteRequestDTO));
+	}
+
+	@PostMapping("/request-trip")
+	public ResponseEntity<TripDTO> requestTrip(@RequestParam String quoteId) {
+		return ResponseEntity.ok(riderService.requestTrip(quoteId));
 	}
 }

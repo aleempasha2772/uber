@@ -1,6 +1,6 @@
 # Uber Microservices Project
 
-A learning project that models a small ride-booking platform using Spring Boot microservices. The repository currently contains Rider, Captain, and Trip services, plus Apache Kafka for captain-location events.
+A learning project that models a small ride-booking platform using Spring Boot microservices. The repository currently contains Rider, Captain, and Trip services, plus Apache Kafka for location and trip-request events.
 
 ## Services
 
@@ -9,7 +9,7 @@ A learning project that models a small ride-booking platform using Spring Boot m
 | Rider Service | `8080` | Creates, reads, lists, deletes, and looks up riders by phone number |
 | Captain Service | `8081` | Manages captains and publishes simulated captain-location updates to Kafka |
 | Trip Service | `8082` | Creates fare quotes and creates/manages trips from quote IDs |
-| Apache Kafka | `9092` | Carries captain-location messages on the `captain-location` topic |
+| Apache Kafka | `9092` | Carries `captain-location` and `trip-requested` events |
 
 All services use Java 17, Spring Boot, Spring Data JPA, and in-memory H2 databases. The Trip service uses OpenFeign to retrieve rider information from the Rider service.
 
@@ -36,6 +36,8 @@ Base URL: `http://localhost:8080/api/v1/riders`
 | `GET` | `/getAll-riders` | Get all riders |
 | `GET` | `/by-phone?phoneNumber={phone}` | Find a rider by phone number |
 | `DELETE` | `/delete-rider/{riderId}` | Delete a rider |
+| `POST` | `/trip-quote` | Request a trip quote through the Trip service |
+| `POST` | `/request-trip?quoteId={quoteId}` | Confirm a quote and request a trip |
 
 Example rider request:
 
@@ -87,7 +89,7 @@ Publish a captain location:
 ```bash
 curl -X PUT http://localhost:8081/api/v1/captains/YOUR_CAPTAIN_ID/location \
   -H "Content-Type: application/json" \
-  -d '{"latitude":17.385,"longitude":78.4867}'
+  -d '{"latitude":17.385,"longitude":78.4867,"available":true}'
 ```
 
 ### Trip Service
@@ -176,7 +178,7 @@ cd trip-service
 ./mvnw spring-boot:run
 ```
 
-The Captain service creates the `captain-location` topic through its Kafka configuration when it starts.
+The services create the `captain-location` and `trip-requested` topics when they start. Trip service continuously consumes captain locations, publishes a trip-request event after a trip is committed, and consumes that event to select the nearest available captain with a location updated within the last 60 seconds.
 
 ### 3. Stop Kafka
 
@@ -211,6 +213,8 @@ Implemented:
 - Fare quote generation with expiry
 - One-time quote consumption when creating a trip
 - Trip retrieval, listing, status updates, and deletion
-- Kafka topic creation and captain-location publishing
+- Structured captain-location publishing and consumption
+- Trip-request event publishing after trip creation
+- Initial nearest-captain matching using an in-memory location registry
 
-Planned architecture items such as nearby-captain matching, ride-offer consumption, captain acceptance events, rider notifications, and trip OTP verification are not yet implemented.
+Ride-offer delivery, captain acceptance events, rider notifications, and trip OTP verification are not yet implemented.

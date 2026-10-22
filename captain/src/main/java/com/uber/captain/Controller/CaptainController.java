@@ -71,7 +71,8 @@ public class CaptainController {
 		captainLocationService.updateCaptainLocation(
 				captain.getId(),
 				request.getLatitude(),
-				request.getLongitude());
+				request.getLongitude(),
+				request.isAvailable());
 
 		return ResponseEntity.ok(Map.of("message", "Location updated"));
 	}

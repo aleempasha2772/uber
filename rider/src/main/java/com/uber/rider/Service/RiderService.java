@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 
 import com.uber.rider.External.DTO.TripQuoteRequestDTO;
 import com.uber.rider.External.DTO.TripQuoteResponseDTO;
+import com.uber.rider.External.DTO.TripDTO;
 import com.uber.rider.External.Services.TripService;
 import com.uber.rider.Model.Rider;
 import com.uber.rider.Repository.RiderRepository;
@@ -92,6 +93,11 @@ public class RiderService {
 	public String getTripQuote(TripQuoteRequestDTO tripQuoteRequestDTO){
 		TripQuoteResponseDTO tripQuoteResponseDTO = tripService.getTripQuote(tripQuoteRequestDTO);
 		return tripQuoteResponseDTO.getQuoteId();
+	}
+
+	public TripDTO requestTrip(String quoteId) {
+		Assert.hasText(quoteId, "Quote ID cannot be empty");
+		return tripService.createTrip(quoteId);
 	}
 	
 

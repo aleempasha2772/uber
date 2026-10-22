@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import com.uber.trip_service.Repository.TripServiceRepository;
 import com.uber.trip_service.Repository.TripQuoteRepository;
 import com.uber.trip_service.Model.TripQuote;
 import com.uber.trip_service.Model.GeoLocation;
+import com.uber.trip_service.Event.TripRequestedEvent;
 import com.uber.trip_service.external.DTO.RiderDto;
 import com.uber.trip_service.external.service.RiderService;
 
@@ -40,11 +42,17 @@ public class TripService {
 	private final TripServiceRepository tripRepository;
 	private final RiderService riderService;
 	private final TripQuoteRepository tripQuoteRepository;
+	private final ApplicationEventPublisher eventPublisher;
 
-	public TripService(TripServiceRepository tripRepository, RiderService riderService, TripQuoteRepository tripQuoteRepository) {
+	public TripService(
+			TripServiceRepository tripRepository,
+			RiderService riderService,
+			TripQuoteRepository tripQuoteRepository,
+			ApplicationEventPublisher eventPublisher) {
 		this.tripRepository = tripRepository;
 		this.riderService = riderService;		
 		this.tripQuoteRepository = tripQuoteRepository;
+		this.eventPublisher = eventPublisher;
 	}
 
 
@@ -122,6 +130,22 @@ public class TripService {
 		Trip savedTrip = tripRepository.save(trip);
 		tripQuote.setUsed(true);
 		tripQuoteRepository.save(tripQuote);
+
+		TripRequestedEvent event = new TripRequestedEvent();
+		event.setEventId(UUID.randomUUID().toString());
+		event.setTripId(savedTrip.getId());
+		event.setQuoteId(tripQuote.getQuoteId());
+		event.setRiderId(tripQuote.getRiderId());
+		event.setRiderPhone(tripQuote.getRiderPhone());
+		event.setPickupLatitude(tripQuote.getPickupLocation().getLatitude());
+		event.setPickupLongitude(tripQuote.getPickupLocation().getLongitude());
+		event.setDropLatitude(tripQuote.getDropLocation().getLatitude());
+		event.setDropLongitude(tripQuote.getDropLocation().getLongitude());
+		event.setEstimatedFare(tripQuote.getEstimatedFare());
+		event.setCurrency(tripQuote.getCurrency());
+		event.setRequestedAt(Instant.now());
+		eventPublisher.publishEvent(event);
+
 		return savedTrip;
 	}
 
